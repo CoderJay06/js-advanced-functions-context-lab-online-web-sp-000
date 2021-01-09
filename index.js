@@ -4,19 +4,11 @@
  We're giving you this function. Take a look at it, you might see some usage
  that's new and different. That's because we're avoiding a well-known, but
  sneaky bug that we'll cover in the next few lessons!
-
  As a result, the lessons for this function will pass *and* it will be available
  for you to use if you need it!
  */
-
-// createEmployeeRecord
-// 2) populates a firstName field from the 0 th element
-// 3) populates a familyName field from the 1 th element
-// 4) populates a title field from the 2 th element
-// 5) populates a payPerHour field from the 3 th element
-// 6) initializes a field, timeInEvents, to hold an empty Array
-// 7) initializes a field, timeOutEvents, to hold an empty Array
-const createEmployeeRecord = (employee) => {
+ 
+let createEmployeeRecord = function(employee) {
     return {
         firstName: employee[0],
         familyName: employee[1],
@@ -25,6 +17,62 @@ const createEmployeeRecord = (employee) => {
         timeInEvents: [],
         timeOutEvents: []
     }
+}
+
+let createEmployeeRecords = function(employees) {
+    return employees.map((emp) => {
+        return createEmployeeRecord.call(this, emp)
+    })
+}
+
+let createTimeInEvent = function(dateStamp) {
+    this.timeInEvents.push({
+        type: "TimeIn",
+        hour: Number(dateStamp.split(" ")[1]),
+        date: dateStamp.split(" ")[0]
+    })
+    return this
+}
+
+let createTimeOutEvent = function(dateStamp) {
+    this.timeOutEvents.push({
+        type: "TimeOut",
+        hour: Number(dateStamp.split(" ")[1]),
+        date: dateStamp.split(" ")[0]
+    })
+    return this
+}
+
+let hoursWorkedOnDate = function(date) {
+    try {
+        let timeInHour = this.timeInEvents.find(event => event.date === date).hour
+        let timeOutHour = this.timeOutEvents.find(event => event.date === date).hour
+        let hoursWorked = (timeOutHour - timeInHour) / 100
+        return hoursWorked
+    } catch (error) {
+         // Raise an exception if a timeIn is found without a matching timeOut
+         error.message = "Dates do not match"
+         if (timeInHour.split(" ")[0] !== timeOutHour.split(" ")[0]) {
+             console.error(error.message)
+         }
+    }
+}
+
+let wagesEarnedOnDate = function(date) {
+    let hoursWorked = hoursWorkedOnDate.call(this, date)
+    let wagesEarned = this.payPerHour * hoursWorked
+    return wagesEarned
+}
+
+let findEmployeeByFirstName = function(employees, firstName) {
+    let matchedEmployee = employees.find((emp) => emp.firstName === firstName)
+    return matchedEmployee
+}
+
+let calculatePayroll = function(employees) {
+    let payOwed = employees.map(empRecord => allWagesFor.call(empRecord))
+                           .reduce((acc, empPay) => acc + empPay)
+    return payOwed
 }
 
 let allWagesFor = function() {
